@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Divider, Image, Typography, Space } from "antd";
+import { Divider, Image, Typography, Space, Skeleton } from "antd";
 import { PhoneFilled, MailOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 export function InfiniteScroll(props) {
   const [dataList, setDataList] = useState([]);
+  const [loading, setLoading] = useState(false);
   let page = 1;
   const last_page = 10;
   const pixel_offset = 400;
@@ -54,10 +55,13 @@ export function InfiniteScroll(props) {
   async function updateContactList(page_no = 1) {
     let url = `https://randomuser.me/api/?page=${page_no}&results=10`;
     try {
+      setLoading(true);
       let data = await getData(url);
       setDataList((prev) => [...prev, ...data.results]);
     } catch (err) {
       alert("Error fetching data!");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -92,6 +96,7 @@ export function InfiniteScroll(props) {
           </div>
         );
       })}
+      <Skeleton loading={loading}></Skeleton>
     </div>
   );
 }
